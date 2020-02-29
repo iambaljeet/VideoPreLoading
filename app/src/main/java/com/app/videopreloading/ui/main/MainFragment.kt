@@ -2,53 +2,46 @@ package com.app.videopreloading.ui.main
 
 import android.content.Context
 import android.content.Intent
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.app.videopreloading.Constants
-import com.app.videopreloading.HomeScreenCallback
+import androidx.fragment.app.Fragment
 import com.app.videopreloading.R
-import com.app.videopreloading.VideoPreLoadingIntentService
+import com.app.videopreloading.callback.HomeScreenCallback
+import com.app.videopreloading.service.VideoPreLoadingService
+import com.app.videopreloading.utility.Constants
 import kotlinx.android.synthetic.main.main_fragment.*
-import java.lang.Exception
 
-class MainFragment : Fragment() {
+class MainFragment : Fragment(), View.OnClickListener {
     private var homeScreenCallback: HomeScreenCallback? = null
 
     companion object {
         fun newInstance() = MainFragment()
     }
 
-    private lateinit var viewModel: MainViewModel
-    private val videoList = arrayListOf<String>()
+    private var videoList = arrayListOf<String>()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         return inflater.inflate(R.layout.main_fragment, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
+        videoList.add("http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4")
+        videoList.add("http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4")
 
-        videoList.add("http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4")
-        videoList.add("http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4")
+        buttonPlayVideo1.setOnClickListener(this)
+        buttonPlayVideo2.setOnClickListener(this)
 
         startPreLoadingService()
-
-        buttonPlayVideo1.setOnClickListener {
-            homeScreenCallback?.openVideoPlayScreen(videoList.get(0))
-        }
-        buttonPlayVideo2.setOnClickListener {
-            homeScreenCallback?.openVideoPlayScreen(videoList.get(0))
-        }
     }
 
     private fun startPreLoadingService() {
-        val preloadingServiceIntent = Intent(context, VideoPreLoadingIntentService::class.java)
+        val preloadingServiceIntent = Intent(context, VideoPreLoadingService::class.java)
         preloadingServiceIntent.putStringArrayListExtra(Constants.VIDEO_LIST, videoList)
         context?.startService(preloadingServiceIntent)
     }
@@ -65,5 +58,16 @@ class MainFragment : Fragment() {
     override fun onDetach() {
         super.onDetach()
         homeScreenCallback = null
+    }
+
+    override fun onClick(v: View?) {
+        when (v?.id) {
+            R.id.buttonPlayVideo1 -> {
+                homeScreenCallback?.openVideoPlayScreen(videoList[0])
+            }
+            R.id.buttonPlayVideo2 -> {
+                homeScreenCallback?.openVideoPlayScreen(videoList[0])
+            }
+        }
     }
 }

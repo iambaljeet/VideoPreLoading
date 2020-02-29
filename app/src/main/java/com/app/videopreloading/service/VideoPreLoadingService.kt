@@ -1,24 +1,26 @@
-package com.app.videopreloading
+package com.app.videopreloading.service
 
 import android.app.IntentService
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import com.app.videopreloading.MyApp
+import com.app.videopreloading.R
+import com.app.videopreloading.utility.Constants
 import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DataSpec
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.upstream.cache.CacheKeyFactory
 import com.google.android.exoplayer2.upstream.cache.CacheUtil
 import com.google.android.exoplayer2.upstream.cache.SimpleCache
-import com.google.android.exoplayer2.util.Log
 import com.google.android.exoplayer2.util.Util
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class VideoPreLoadingIntentService : IntentService(VideoPreLoadingIntentService::class.java.simpleName) {
-    private val TAG = VideoPreLoadingIntentService::class.java.simpleName
+class VideoPreLoadingService :
+    IntentService(VideoPreLoadingService::class.java.simpleName) {
     private lateinit var mContext: Context
     private var simpleCache: SimpleCache? = null
     private var cachingJob: Job? = null
@@ -48,33 +50,20 @@ class VideoPreLoadingIntentService : IntentService(VideoPreLoadingIntentService:
         }
         if (!videoUrl.isNullOrBlank()) {
             val videoUri = Uri.parse(videoUrl)
-            val dataSpec = DataSpec(videoUri, 0, 1000*1024, null)
+            val dataSpec = DataSpec(videoUri)
             val defaultCacheKeyFactory = CacheUtil.DEFAULT_CACHE_KEY_FACTORY
             val progressListener =
                 CacheUtil.ProgressListener { requestLength, bytesCached, newBytesCached ->
                     val downloadPercentage: Double = (bytesCached * 100.0
                             / requestLength)
-
-                    Log.d(TAG, "preCacheVideo downloadPercentage: $downloadPercentage")
                 }
-
-            val cacheKey = CacheUtil.generateKey(videoUri)
-            Log.d(TAG, "preCacheVideo generateKey: $cacheKey")
-
-            val cached = CacheUtil.getCached(dataSpec, simpleCache, defaultCacheKeyFactory)
-
-            Log.d(TAG, "preCacheVideo cached.first: ${cached.first} cached.second: ${cached.second}")
-
             val dataSource: DataSource =
-                DefaultDataSourceFactory(
-                    mContext,
-                    Util.getUserAgent(mContext, getString(R.string.app_name))
-                )
-                    .createDataSource()
+                    DefaultDataSourceFactory(
+                            mContext,
+                            Util.getUserAgent(this, getString(R.string.app_name))).createDataSource()
 
             cachingJob = GlobalScope.launch(Dispatchers.IO) {
                 cacheVideo(dataSpec, defaultCacheKeyFactory, dataSource, progressListener)
-
                 preCacheVideo(videosList)
             }
         }
@@ -98,7 +87,6 @@ class VideoPreLoadingIntentService : IntentService(VideoPreLoadingIntentService:
 
     override fun onDestroy() {
         super.onDestroy()
-        Log.d(TAG, "onDestroy")
         cachingJob?.cancel()
     }
 }

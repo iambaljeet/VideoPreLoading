@@ -9,14 +9,14 @@
         android:id="@+id/mainFragment"
         android:name="com.app.videopreloading.ui.main.MainFragment"
         android:label="main_fragment"
-        tools:layout="@layout/main_fragment" >
+        tools:layout="@layout/main_fragment">
         <action
             android:id="@+id/action_mainFragment_to_playerFragment"
             app:destination="@id/playerFragment" />
     </fragment>
     <fragment
         android:id="@+id/playerFragment"
-        android:name="com.app.videopreloading.PlayerFragment"
+        android:name="com.app.videopreloading.ui.player.PlayerFragment"
         android:label="player_fragment"
         tools:layout="@layout/player_fragment" />
 </navigation>

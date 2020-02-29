@@ -1,4 +1,4 @@
-package com.app.videopreloading
+package com.app.videopreloading.utility
 
 object Constants {
     const val VIDEO_LIST = "VIDEO_LIST"

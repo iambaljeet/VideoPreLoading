@@ -5,7 +5,7 @@ import com.google.android.exoplayer2.database.ExoDatabaseProvider
 import com.google.android.exoplayer2.upstream.cache.LeastRecentlyUsedCacheEvictor
 import com.google.android.exoplayer2.upstream.cache.SimpleCache
 
-class MyApp: Application() {
+class MyApp : Application() {
 
     companion object {
         var simpleCache: SimpleCache? = null
