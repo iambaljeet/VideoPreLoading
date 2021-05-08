@@ -31,8 +31,8 @@ class MainFragment : Fragment(), View.OnClickListener {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        videoList.add("http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4")
-        videoList.add("http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4")
+        videoList.add("https://file-examples-com.github.io/uploads/2017/04/file_example_MP4_480_1_5MG.mp4")
+        videoList.add("https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4")
 
         buttonPlayVideo1.setOnClickListener(this)
         buttonPlayVideo2.setOnClickListener(this)
@@ -66,7 +66,7 @@ class MainFragment : Fragment(), View.OnClickListener {
                 homeScreenCallback?.openVideoPlayScreen(videoList[0])
             }
             R.id.buttonPlayVideo2 -> {
-                homeScreenCallback?.openVideoPlayScreen(videoList[0])
+                homeScreenCallback?.openVideoPlayScreen(videoList[1])
             }
         }
     }
